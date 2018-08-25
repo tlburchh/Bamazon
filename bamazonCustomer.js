@@ -46,7 +46,7 @@ function initialDisplay() {
    
                 var howMany = answer.howMany;
                 var itemID = answer.productId;
-                var itemCost = [];
+                // var itemCost = [];
 
                 if (answer.howMany <= 0){
                     console.log("Insufficient Quantity");
@@ -54,11 +54,14 @@ function initialDisplay() {
                 } else {
                     console.log(answer);
                 
-                    connection.query(
-                       "UPDATE products SET stock_quantity = stock_quantity - ? WHERE item_id = ? AND price = ?",
+                   var query = connection.query(
+                       "UPDATE products SET stock_quantity = stock_quantity - ? WHERE item_id = ? WHERE price = ?",
                        [howMany, itemID, itemCost], function(err, res) {
                         console.log('Yay, success! Your cost is ' + itemCost);
                         // initialDisplay();
+
+                        console.log(query.sql);
+                        connection.end()
                     }
 
                    );
