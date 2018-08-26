@@ -28,7 +28,7 @@ connection.connect(function(err){
             // console.log(response);
             console.log("--------------------------------");
             
-            connection.end();
+            // connection.end();
             });
         }
 
@@ -41,7 +41,7 @@ connection.connect(function(err){
                 }
                 // console.log(response);
                 console.log("--------------------------------");
-                connection.end();
+                // connection.end();
             });
 
         }
@@ -65,7 +65,7 @@ connection.connect(function(err){
                 
                 var select = answer.inventorySelect;
                 var addUnits = answer.addInventory; 
-
+                console.log(answer);
             connection.query("UPDATE products SET stock_quantity = stock_quantity + ? WHERE item_id = ?",[addUnits, select], function (error, response){
                 if (error) throw error;
                 // // console.log(query);
@@ -74,14 +74,69 @@ connection.connect(function(err){
                     console.log("\n"+response[i].item_id + " |" + response[i].product_name + " | " + response[i].department_name + " | " + response[i].price + " | " + response[i].stock_quantity );          
                 }
                 // console.log(response);
-                console.log("--------------------------------");
-                connection.end();
+                console.log("Product inventory adjusted");
+                // connection.end();
             });
         });
     }
 
         function addProduct(){
             // INSERT INTO products () VALUES ()
+
+            initialDisplay();
+            inquirer
+            .prompt([
+              {
+                name: "item",
+                type: "input",
+                message: "What is the item you would like to submit?"
+              },
+              {
+                name: "category",
+                type: "input",
+                message: "What department would you like to place your item in?"
+              },
+              {
+                name: "price",
+                type: "input",
+                message: "What would you like the price to be?",
+                validate: function(value) {
+                  if (isNaN(value) === false) {
+                    return true;
+                  }
+                  return false;
+                }
+              },
+              {
+                name: "stockQuantity",
+                type: "input",
+                message: "What is the stock quantity?",
+                validate: function(value) {
+                  if (isNaN(value) === false) {
+                    return true;
+                  }
+                  return false;
+                }
+              }
+            ])
+            .then(function(answer) {
+              // when finished prompting, insert a new item into the db with that info
+              connection.query(
+                "INSERT INTO products SET ?",
+                {
+                  product_name: answer.item,
+                  department_name: answer.category,
+                  price: answer.price,
+                  stock_quantity: answer.stockQuantity
+                },
+                function(err) {
+                  if (err) throw err;
+                  console.log("Product was added successfully!");
+                  // re-prompt the user for if they want to bid or post
+                  initialDisplay();
+                }
+              );
+            });
         }
 
         //function starts inquirer prompt
