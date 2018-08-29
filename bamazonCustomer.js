@@ -45,23 +45,28 @@ function initialDisplay() {
             ]).then(function(answer){
    
                 var howMany = answer.howMany;
-                var itemID = answer.productId;
+                var itemID = {id: answer.productId,
+                              price: answer.productId.price}
                 // var itemCost = [];
 
                 if (answer.howMany <= 0){
                     console.log("Insufficient Quantity");
 
                 } else {
-                    console.log(answer);
+                    console.log(itemID);
                 
                    var query = connection.query(
-                       "UPDATE products SET stock_quantity = stock_quantity - ? WHERE item_id = ? WHERE price = ?",
-                       [howMany, itemID, itemCost], function(err, res) {
-                        console.log('Yay, success! Your cost is ' + itemCost);
+                    //    "SELECT * WHERE products ?"
+                    //    {
+                    //        id: itemNumber
+                    //    }
+                       "UPDATE products SET stock_quantity = stock_quantity - ? WHERE item_id = ?",
+                       [howMany, itemID.id, itemID.price], function(err, res) {
+                        // console.log('Yay, success! Your cost is ' + itemPrice);
                         // initialDisplay();
 
-                        console.log(query.sql);
-                        connection.end()
+                        console.log("success!");
+                        // connection.end()
                     }
 
                    );
